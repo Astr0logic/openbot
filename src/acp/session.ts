@@ -7,11 +7,13 @@ export type AcpSessionStore = {
   createSession: (params: { sessionKey: string; cwd: string; sessionId?: string }) => AcpSession;
   getSession: (sessionId: string) => AcpSession | undefined;
   getSessionByRunId: (runId: string) => AcpSession | undefined;
+  getSessionBySessionKey: (sessionKey: string) => AcpSession | undefined;
   setActiveRun: (sessionId: string, runId: string, abortController: AbortController) => void;
   clearActiveRun: (sessionId: string) => void;
   cancelActiveRun: (sessionId: string) => boolean;
   setMcpManager: (sessionId: string, mcpManager: McpClientManager) => void;
   getMcpManager: (sessionId: string) => McpClientManager | null;
+  getMcpManagerBySessionKey: (sessionKey: string) => McpClientManager | null;
   clearAllSessionsForTest: () => void;
 };
 
@@ -39,6 +41,13 @@ export function createInMemorySessionStore(): AcpSessionStore {
   const getSessionByRunId: AcpSessionStore["getSessionByRunId"] = (runId) => {
     const sessionId = runIdToSessionId.get(runId);
     return sessionId ? sessions.get(sessionId) : undefined;
+  };
+
+  const getSessionBySessionKey: AcpSessionStore["getSessionBySessionKey"] = (sessionKey) => {
+    for (const session of sessions.values()) {
+      if (session.sessionKey === sessionKey) return session;
+    }
+    return undefined;
   };
 
   const setActiveRun: AcpSessionStore["setActiveRun"] = (sessionId, runId, abortController) => {
@@ -78,6 +87,11 @@ export function createInMemorySessionStore(): AcpSessionStore {
     return session?.mcpManager ?? null;
   };
 
+  const getMcpManagerBySessionKey: AcpSessionStore["getMcpManagerBySessionKey"] = (sessionKey) => {
+    const session = getSessionBySessionKey(sessionKey);
+    return session?.mcpManager ?? null;
+  };
+
   const clearAllSessionsForTest: AcpSessionStore["clearAllSessionsForTest"] = () => {
     for (const session of sessions.values()) {
       session.abortController?.abort();
@@ -91,11 +105,13 @@ export function createInMemorySessionStore(): AcpSessionStore {
     createSession,
     getSession,
     getSessionByRunId,
+    getSessionBySessionKey,
     setActiveRun,
     clearActiveRun,
     cancelActiveRun,
     setMcpManager,
     getMcpManager,
+    getMcpManagerBySessionKey,
     clearAllSessionsForTest,
   };
 }

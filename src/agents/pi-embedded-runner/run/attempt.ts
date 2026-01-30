@@ -43,6 +43,8 @@ import { resolveSandboxContext } from "../../sandbox.js";
 import { guardSessionManager } from "../../session-tool-result-guard-wrapper.js";
 import { resolveTranscriptPolicy } from "../../transcript-policy.js";
 import { acquireSessionWriteLock } from "../../session-write-lock.js";
+import { defaultAcpSessionStore } from "../../../acp/session.js";
+import { createAllMcpToolAdapters } from "../../../mcp/tool-adapter.js";
 import {
   applySkillEnvOverrides,
   applySkillEnvOverridesFromSnapshot,
@@ -233,7 +235,16 @@ export async function runEmbeddedAttempt(
           hasRepliedRef: params.hasRepliedRef,
           modelHasVision,
         });
-    const tools = sanitizeToolsForGoogle({ tools: toolsRaw, provider: params.provider });
+
+    // Inject MCP tools from session if available
+    const sessionKey = params.sessionKey ?? params.sessionId;
+    const mcpManager = sessionKey
+      ? defaultAcpSessionStore.getMcpManagerBySessionKey(sessionKey)
+      : null;
+    const mcpTools = mcpManager ? createAllMcpToolAdapters(mcpManager) : [];
+    const toolsWithMcp = [...toolsRaw, ...mcpTools];
+
+    const tools = sanitizeToolsForGoogle({ tools: toolsWithMcp, provider: params.provider });
     logToolSchemasForGoogle({ tools, provider: params.provider });
 
     const machineName = await getMachineDisplayName();
