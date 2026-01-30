@@ -20,6 +20,8 @@ export type AcpSessionStore = {
 export function createInMemorySessionStore(): AcpSessionStore {
   const sessions = new Map<string, AcpSession>();
   const runIdToSessionId = new Map<string, string>();
+  // Index for O(1) lookup by sessionKey
+  const sessionKeyToSessionId = new Map<string, string>();
 
   const createSession: AcpSessionStore["createSession"] = (params) => {
     const sessionId = params.sessionId ?? randomUUID();
@@ -33,6 +35,8 @@ export function createInMemorySessionStore(): AcpSessionStore {
       mcpManager: null,
     };
     sessions.set(sessionId, session);
+    // Index by sessionKey for fast lookup
+    sessionKeyToSessionId.set(params.sessionKey, sessionId);
     return session;
   };
 
@@ -44,10 +48,9 @@ export function createInMemorySessionStore(): AcpSessionStore {
   };
 
   const getSessionBySessionKey: AcpSessionStore["getSessionBySessionKey"] = (sessionKey) => {
-    for (const session of sessions.values()) {
-      if (session.sessionKey === sessionKey) return session;
-    }
-    return undefined;
+    // O(1) lookup using index
+    const sessionId = sessionKeyToSessionId.get(sessionKey);
+    return sessionId ? sessions.get(sessionId) : undefined;
   };
 
   const setActiveRun: AcpSessionStore["setActiveRun"] = (sessionId, runId, abortController) => {
@@ -99,6 +102,7 @@ export function createInMemorySessionStore(): AcpSessionStore {
     }
     sessions.clear();
     runIdToSessionId.clear();
+    sessionKeyToSessionId.clear();
   };
 
   return {

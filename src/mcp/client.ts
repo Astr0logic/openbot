@@ -42,10 +42,7 @@ export class McpClientManager {
 
     this.log(`[mcp] connecting to ${config.name} (${config.id})`);
 
-    const client = new Client(
-      { name: "openbot", version: "1.0.0" },
-      { capabilities: { tools: {}, resources: {} } },
-    );
+    const client = new Client({ name: "openbot", version: "1.0.0" }, { capabilities: {} });
 
     let transport: StdioClientTransport | SSEClientTransport;
 
@@ -53,10 +50,16 @@ export class McpClientManager {
       if (!config.command) {
         throw new Error(`MCP server ${config.id}: stdio transport requires 'command'`);
       }
+      // Filter out undefined env values for type safety
+      const env: Record<string, string> = {};
+      for (const [k, v] of Object.entries(process.env)) {
+        if (v !== undefined) env[k] = v;
+      }
+      if (config.env) Object.assign(env, config.env);
       transport = new StdioClientTransport({
         command: config.command,
         args: config.args,
-        env: { ...process.env, ...config.env },
+        env,
       });
     } else if (config.transport === "sse" || config.transport === "http") {
       if (!config.url) {
@@ -196,10 +199,11 @@ export class McpClientManager {
         ),
       ]);
 
+      const isError = Boolean(result.isError);
       return {
-        success: !result.isError,
+        success: !isError,
         content: (result.content as McpCallToolResult["content"]) ?? [],
-        isError: result.isError,
+        isError,
       };
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);

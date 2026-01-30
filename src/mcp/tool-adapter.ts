@@ -140,17 +140,18 @@ export function createMcpToolAdapter(
         args as Record<string, unknown>,
       );
 
+      const text = formatMcpResult(result.content);
+
       if (result.isError || !result.success) {
         return {
-          type: "tool_result" as const,
-          isError: true,
-          content: formatMcpResult(result.content),
+          content: [{ type: "text" as const, text: `Error: ${text}` }],
+          details: { error: true, raw: result.content },
         };
       }
 
       return {
-        type: "tool_result" as const,
-        content: formatMcpResult(result.content),
+        content: [{ type: "text" as const, text }],
+        details: { raw: result.content },
       };
     },
   };
@@ -182,15 +183,16 @@ export function createMcpResourceTool(mcpManager: McpClientManager): AnyAgentToo
 
       if (!result.success) {
         return {
-          type: "tool_result" as const,
-          isError: true,
-          content: result.error ?? "Failed to read resource",
+          content: [
+            { type: "text" as const, text: `Error: ${result.error ?? "Failed to read resource"}` },
+          ],
+          details: { error: true, serverId, uri },
         };
       }
 
       return {
-        type: "tool_result" as const,
-        content: result.content ?? "(empty)",
+        content: [{ type: "text" as const, text: result.content ?? "(empty)" }],
+        details: { serverId, uri },
       };
     },
   };
@@ -208,15 +210,22 @@ export function createMcpListTool(mcpManager: McpClientManager): AnyAgentTool {
     execute: async () => {
       const serverIds = mcpManager.getConnectedServerIds();
       const lines: string[] = [];
+      const summary: { servers: number; tools: number; resources: number } = {
+        servers: 0,
+        tools: 0,
+        resources: 0,
+      };
 
       for (const serverId of serverIds) {
         const state = mcpManager.getServerState(serverId);
         if (!state) continue;
 
+        summary.servers++;
         lines.push(`## ${state.config.name} (${serverId})`);
         lines.push("");
 
         if (state.tools.length > 0) {
+          summary.tools += state.tools.length;
           lines.push("### Tools:");
           for (const tool of state.tools) {
             lines.push(`- **${tool.name}**: ${tool.description ?? "(no description)"}`);
@@ -225,6 +234,7 @@ export function createMcpListTool(mcpManager: McpClientManager): AnyAgentTool {
         }
 
         if (state.resources.length > 0) {
+          summary.resources += state.resources.length;
           lines.push("### Resources:");
           for (const resource of state.resources) {
             lines.push(`- **${resource.uri}**: ${resource.description ?? resource.name}`);
@@ -235,14 +245,14 @@ export function createMcpListTool(mcpManager: McpClientManager): AnyAgentTool {
 
       if (lines.length === 0) {
         return {
-          type: "tool_result" as const,
-          content: "No MCP servers connected.",
+          content: [{ type: "text" as const, text: "No MCP servers connected." }],
+          details: summary,
         };
       }
 
       return {
-        type: "tool_result" as const,
-        content: lines.join("\n"),
+        content: [{ type: "text" as const, text: lines.join("\n") }],
+        details: summary,
       };
     },
   };
