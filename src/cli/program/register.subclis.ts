@@ -239,6 +239,15 @@ const entries: SubCliEntry[] = [
       mod.registerCompletionCli(program);
     },
   },
+  {
+    name: "mcp",
+    description: "MCP (Model Context Protocol) tools",
+    register: async (program) => {
+      const mod = await import("../mcp-cli.js");
+      mod.registerMcpCli(program);
+    },
+  },
+  },
 ];
 
 export function getSubCliEntries(): SubCliEntry[] {
