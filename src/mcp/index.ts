@@ -2,11 +2,12 @@
  * MCP (Model Context Protocol) integration for openbot.
  *
  * This module provides:
- * - McpClientManager: Connect to external MCP servers (stdio, SSE)
- * - Tool adapters: Convert MCP tools to openbot AgentTool format
+ * - McpClientManager: Connect to external MCP servers (stdio, SSE, HTTP)
+ * - McpServer: Expose openbot tools as MCP endpoints
+ * - Tool adapters: Convert MCP tools to/from openbot AgentTool format
  * - Resource access: Read resources from MCP servers
  *
- * Usage:
+ * Client Usage:
  *   import { McpClientManager, createAllMcpToolAdapters } from "./mcp/index.js";
  *
  *   const manager = new McpClientManager({ log: console.log });
@@ -17,10 +18,15 @@
  *     command: "npx",
  *     args: ["-y", "@modelcontextprotocol/server-filesystem"],
  *   });
- *
  *   const tools = createAllMcpToolAdapters(manager);
+ *
+ * Server Usage:
+ *   import { startMcpServerStdio } from "./mcp/index.js";
+ *
+ *   await startMcpServerStdio({ tools: myTools, name: "openbot" });
  */
 
+// Client
 export { McpClientManager } from "./client.js";
 export {
   createMcpToolAdapter,
@@ -29,6 +35,16 @@ export {
   createMcpListTool,
 } from "./tool-adapter.js";
 export { acpMcpServerToConfig, acpMcpServersToConfigs } from "./acp-adapter.js";
+
+// Server
+export {
+  createMcpServer,
+  startMcpServerStdio,
+  createMcpServerRunner,
+  type McpServerOptions,
+} from "./server.js";
+
+// Types
 export type {
   McpServerConfig,
   McpClientState,
