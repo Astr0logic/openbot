@@ -247,6 +247,16 @@ const entries: SubCliEntry[] = [
       mod.registerMcpCli(program);
     },
   },
+<<<<<<< HEAD
+=======
+  {
+    name: "orchestration",
+    description: "Multi-instance orchestration",
+    register: async (program) => {
+      const mod = await import("../orchestration-cli.js");
+      mod.registerOrchestrationCli(program);
+    },
+>>>>>>> 37cd99e6d (feat(orchestration): add multi-instance coordination layer)
   },
 ];
 
