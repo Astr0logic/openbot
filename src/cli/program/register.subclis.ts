@@ -227,6 +227,14 @@ const entries: SubCliEntry[] = [
       mod.registerUpdateCli(program);
     },
   },
+  {
+    name: "mcp",
+    description: "MCP (Model Context Protocol) tools",
+    register: async (program) => {
+      const mod = await import("../mcp-cli.js");
+      mod.registerMcpCli(program);
+    },
+  },
 ];
 
 function removeCommand(program: Command, command: Command) {
