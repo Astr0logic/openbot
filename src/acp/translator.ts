@@ -12,6 +12,7 @@ import type {
   ListSessionsResponse,
   LoadSessionRequest,
   LoadSessionResponse,
+  McpServer,
   NewSessionRequest,
   NewSessionResponse,
   PromptRequest,
@@ -25,6 +26,8 @@ import { PROTOCOL_VERSION } from "@agentclientprotocol/sdk";
 import type { GatewayClient } from "../gateway/client.js";
 import type { EventFrame } from "../gateway/protocol/index.js";
 import type { SessionsListResult } from "../gateway/session-utils.js";
+import { McpClientManager } from "../mcp/client.js";
+import { acpMcpServersToConfigs } from "../mcp/acp-adapter.js";
 import { getAvailableCommands } from "./commands.js";
 import { readBool, readNumber, readString } from "./meta.js";
 import {
@@ -110,8 +113,8 @@ export class AcpGatewayAgent implements Agent {
           embeddedContext: true,
         },
         mcpCapabilities: {
-          http: false,
-          sse: false,
+          http: true,
+          sse: true,
         },
         sessionCapabilities: {
           list: {},
@@ -123,10 +126,6 @@ export class AcpGatewayAgent implements Agent {
   }
 
   async newSession(params: NewSessionRequest): Promise<NewSessionResponse> {
-    if (params.mcpServers.length > 0) {
-      this.log(`ignoring ${params.mcpServers.length} MCP servers`);
-    }
-
     const sessionId = randomUUID();
     const meta = parseSessionMeta(params._meta);
     const sessionKey = await resolveSessionKey({
@@ -147,16 +146,18 @@ export class AcpGatewayAgent implements Agent {
       sessionKey,
       cwd: params.cwd,
     });
+
+    // Connect to MCP servers if provided
+    if (params.mcpServers.length > 0) {
+      await this.connectMcpServers(session.sessionId, params.mcpServers);
+    }
+
     this.log(`newSession: ${session.sessionId} -> ${session.sessionKey}`);
     await this.sendAvailableCommands(session.sessionId);
     return { sessionId: session.sessionId };
   }
 
   async loadSession(params: LoadSessionRequest): Promise<LoadSessionResponse> {
-    if (params.mcpServers.length > 0) {
-      this.log(`ignoring ${params.mcpServers.length} MCP servers`);
-    }
-
     const meta = parseSessionMeta(params._meta);
     const sessionKey = await resolveSessionKey({
       meta,
@@ -176,6 +177,12 @@ export class AcpGatewayAgent implements Agent {
       sessionKey,
       cwd: params.cwd,
     });
+
+    // Connect to MCP servers if provided
+    if (params.mcpServers.length > 0) {
+      await this.connectMcpServers(session.sessionId, params.mcpServers);
+    }
+
     this.log(`loadSession: ${session.sessionId} -> ${session.sessionKey}`);
     await this.sendAvailableCommands(session.sessionId);
     return {};
@@ -420,5 +427,35 @@ export class AcpGatewayAgent implements Agent {
         availableCommands: getAvailableCommands(),
       },
     });
+  }
+
+  /**
+   * Connect to MCP servers for a session.
+   */
+  private async connectMcpServers(sessionId: string, mcpServers: McpServer[]): Promise<void> {
+    const configs = acpMcpServersToConfigs(mcpServers);
+    if (configs.length === 0) return;
+
+    this.log(`[mcp] connecting to ${configs.length} MCP servers for session ${sessionId}`);
+
+    const manager = new McpClientManager({ log: this.log });
+
+    for (const config of configs) {
+      try {
+        await manager.connect(config);
+        this.log(`[mcp] connected to ${config.name} (${config.id})`);
+      } catch (err) {
+        this.log(`[mcp] failed to connect to ${config.name}: ${String(err)}`);
+      }
+    }
+
+    // Store the manager in the session
+    this.sessionStore.setMcpManager(sessionId, manager);
+
+    // Log discovered tools
+    const tools = manager.getAllTools();
+    if (tools.length > 0) {
+      this.log(`[mcp] discovered ${tools.length} tools: ${tools.map((t) => t.name).join(", ")}`);
+    }
   }
 }

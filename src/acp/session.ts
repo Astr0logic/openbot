@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 
+import type { McpClientManager } from "../mcp/client.js";
 import type { AcpSession } from "./types.js";
 
 export type AcpSessionStore = {
@@ -9,6 +10,8 @@ export type AcpSessionStore = {
   setActiveRun: (sessionId: string, runId: string, abortController: AbortController) => void;
   clearActiveRun: (sessionId: string) => void;
   cancelActiveRun: (sessionId: string) => boolean;
+  setMcpManager: (sessionId: string, mcpManager: McpClientManager) => void;
+  getMcpManager: (sessionId: string) => McpClientManager | null;
   clearAllSessionsForTest: () => void;
 };
 
@@ -25,6 +28,7 @@ export function createInMemorySessionStore(): AcpSessionStore {
       createdAt: Date.now(),
       abortController: null,
       activeRunId: null,
+      mcpManager: null,
     };
     sessions.set(sessionId, session);
     return session;
@@ -63,9 +67,21 @@ export function createInMemorySessionStore(): AcpSessionStore {
     return true;
   };
 
+  const setMcpManager: AcpSessionStore["setMcpManager"] = (sessionId, mcpManager) => {
+    const session = sessions.get(sessionId);
+    if (!session) return;
+    session.mcpManager = mcpManager;
+  };
+
+  const getMcpManager: AcpSessionStore["getMcpManager"] = (sessionId) => {
+    const session = sessions.get(sessionId);
+    return session?.mcpManager ?? null;
+  };
+
   const clearAllSessionsForTest: AcpSessionStore["clearAllSessionsForTest"] = () => {
     for (const session of sessions.values()) {
       session.abortController?.abort();
+      void session.mcpManager?.disconnectAll();
     }
     sessions.clear();
     runIdToSessionId.clear();
@@ -78,6 +94,8 @@ export function createInMemorySessionStore(): AcpSessionStore {
     setActiveRun,
     clearActiveRun,
     cancelActiveRun,
+    setMcpManager,
+    getMcpManager,
     clearAllSessionsForTest,
   };
 }
