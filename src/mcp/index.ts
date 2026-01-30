@@ -44,6 +44,14 @@ export {
   type McpServerOptions,
 } from "./server.js";
 
+// Audit Logging
+export {
+  McpAuditLogger,
+  createDefaultAuditLogger,
+  type AuditLogEntry,
+  type AuditLoggerOptions,
+} from "./audit-log.js";
+
 // Types
 export type {
   McpServerConfig,
