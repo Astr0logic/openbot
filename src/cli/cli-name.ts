@@ -1,9 +1,9 @@
 import path from "node:path";
 
-export const DEFAULT_CLI_NAME = "jrl";
+export const DEFAULT_CLI_NAME = "openbot";
 
-const KNOWN_CLI_NAMES = new Set([DEFAULT_CLI_NAME, "jellyfish"]);
-const CLI_PREFIX_RE = /^(?:((?:pnpm|npm|bunx|npx)\s+))?(jrl|jellyfish)\b/;
+const KNOWN_CLI_NAMES = new Set([DEFAULT_CLI_NAME, "jrl", "jellyfish"]);
+const CLI_PREFIX_RE = /^(?:((?:pnpm|npm|bunx|npx)\s+))?(openbot|jrl|jellyfish)\b/;
 
 export function resolveCliName(argv: string[] = process.argv): string {
   const argv1 = argv[1];
