@@ -235,6 +235,14 @@ const entries: SubCliEntry[] = [
       mod.registerMcpCli(program);
     },
   },
+  {
+    name: "orchestration",
+    description: "Multi-instance orchestration",
+    register: async (program) => {
+      const mod = await import("../orchestration-cli.js");
+      mod.registerOrchestrationCli(program);
+    },
+  },
 ];
 
 function removeCommand(program: Command, command: Command) {

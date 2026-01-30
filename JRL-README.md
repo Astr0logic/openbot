@@ -43,13 +43,14 @@ Full Model Context Protocol support for tool interoperability.
 
 ```
 src/mcp/
-├── client.ts       # Connect to external MCP servers (stdio/SSE/HTTP)
-├── server.ts       # Expose openbot tools via MCP protocol
-├── tool-adapter.ts # Convert MCP tools ↔ openbot AgentTool format
-├── acp-adapter.ts  # ACP protocol MCP server conversion
-├── audit-log.ts    # Security audit logging (JSONL)
-├── types.ts        # Type definitions
-└── index.ts        # Unified exports
+├── client.ts         # Connect to external MCP servers (stdio/SSE/HTTP)
+├── server.ts         # Expose openbot tools via MCP protocol
+├── tool-adapter.ts   # Convert MCP tools ↔ openbot AgentTool format
+├── acp-adapter.ts    # ACP protocol MCP server conversion
+├── audit-log.ts      # Security audit logging (JSONL)
+├── connection-pool.ts # Persistent connection pooling with LRU eviction
+├── types.ts          # Type definitions
+└── index.ts          # Unified exports
 ```
 
 **Capabilities:**
@@ -57,6 +58,7 @@ src/mcp/
 - ✅ **MCP Server** - Expose openbot tools to other MCP clients
 - ✅ **Tool Wiring** - MCP tools available during agent execution
 - ✅ **Audit Logging** - JSONL logs with auto-redaction
+- ✅ **Connection Pooling** - Reuse connections with health checks
 
 **Usage:**
 ```typescript
@@ -81,6 +83,68 @@ await startMcpServerStdio({ tools: myTools, name: "openbot" });
 import { createDefaultAuditLogger } from "./mcp/index.js";
 const logger = createDefaultAuditLogger();
 logger.logRequest({ toolName: "read_file", args: { path: "/tmp/x" }, requestId: "abc" });
+```
+
+### Orchestration Layer (New Feature)
+
+Multi-instance coordination for distributed openbot deployments.
+
+```
+src/orchestration/
+├── orchestrator.ts    # Central coordinator for task management
+├── worker-registry.ts # Track worker instances and health
+├── task-router.ts     # Route tasks via configurable strategies
+├── types.ts           # Type definitions
+└── index.ts           # Unified exports
+```
+
+**Capabilities:**
+- ✅ **Worker Registry** - Register/unregister worker instances
+- ✅ **Health Monitoring** - Heartbeat-based health checks
+- ✅ **Task Queue** - Priority-based task queuing
+- ✅ **Routing Strategies** - Round-robin, least-loaded, capability-match, random
+- ✅ **Task Lifecycle** - Timeouts, retries, completion tracking
+
+**CLI Commands:**
+```bash
+# Start supervisor orchestrator
+openbot orchestration supervisor --port 18800 --strategy least-loaded
+
+# Check status
+openbot orchestration status
+
+# List workers
+openbot orchestration workers
+```
+
+**Usage:**
+```typescript
+import { Orchestrator } from "./orchestration/index.js";
+
+const orchestrator = new Orchestrator({
+  routingStrategy: "least-loaded",
+  heartbeatIntervalMs: 30_000,
+  defaultTaskTimeoutMs: 60_000,
+});
+
+orchestrator.start();
+
+// Register a worker
+orchestrator.registerWorker({
+  id: "worker-1",
+  name: "Worker 1",
+  endpoint: "http://localhost:18790",
+  capabilities: ["chat", "code"],
+  currentLoad: 0,
+  maxLoad: 10,
+});
+
+// Submit a task
+const task = orchestrator.submitTask({
+  type: "chat",
+  payload: { message: "Hello" },
+  priority: "normal",
+});
 ```
 
 ---
@@ -113,11 +177,11 @@ logger.logRequest({ toolName: "read_file", args: { path: "/tmp/x" }, requestId: 
 
 ### High Priority
 
-- [ ] **Orchestration Layer** - Supervisor openbot managing fleet of worker instances
-  - Multi-instance coordination
-  - Task routing and load balancing
-  - Health monitoring
-  - Consensus protocols
+- [x] **Orchestration Layer** - Supervisor openbot managing fleet of worker instances
+  - ✅ Multi-instance coordination
+  - ✅ Task routing and load balancing
+  - ✅ Health monitoring
+  - [ ] Consensus protocols (future)
 
 - [ ] **BitChat BLE Channel** - Mesh networking via Bluetooth Low Energy
   - Offline-first messaging
@@ -130,10 +194,10 @@ logger.logRequest({ toolName: "read_file", args: { path: "/tmp/x" }, requestId: 
 
 ### Performance Optimizations
 
-- [ ] **MCP Connection Pooling** - Persistent connections with health checks
+- [x] **MCP Connection Pooling** - Persistent connections with health checks
 - [ ] **Tool Schema Caching** - Cache schemas with TTL
 - [ ] **Audit Log Batching** - Buffer writes, flush periodically
-- [ ] **Session Lookup Index** - O(1) lookup by sessionKey (currently O(n))
+- [x] **Session Lookup Index** - O(1) lookup by sessionKey
 
 ### Security Enhancements
 
@@ -145,9 +209,10 @@ logger.logRequest({ toolName: "read_file", args: { path: "/tmp/x" }, requestId: 
 
 ### Developer Experience
 
-- [ ] **`openbot mcp serve`** - CLI command to start MCP server
-- [ ] **`openbot mcp connect`** - CLI to test MCP connections
-- [ ] **`openbot mcp list`** - List connected servers and tools
+- [x] **`openbot mcp serve`** - CLI command to start MCP server
+- [x] **`openbot mcp connect`** - CLI to test MCP connections
+- [x] **`openbot mcp list`** - List connected servers and tools
+- [x] **`openbot mcp audit`** - View MCP audit logs
 - [ ] **MCP Config in config.json5** - Persistent MCP server configs
 - [ ] **Hot Reload** - Reconnect on config change
 
@@ -180,8 +245,10 @@ When continuing development, focus on:
 | Area | Files |
 |------|-------|
 | **MCP Core** | `src/mcp/*.ts` |
+| **Orchestration** | `src/orchestration/*.ts` |
 | **Tool Injection** | `src/agents/pi-embedded-runner/run/attempt.ts:238-248` |
 | **Session MCP** | `src/acp/session.ts`, `src/acp/translator.ts` |
+| **CLI Commands** | `src/cli/mcp-cli.ts`, `src/cli/orchestration-cli.ts` |
 | **Branding** | `src/cli/banner.ts`, `src/terminal/palette.ts` |
 | **Channel Plugins** | `extensions/*/`, `src/channels/plugins/` |
 
