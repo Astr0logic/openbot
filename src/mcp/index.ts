@@ -52,6 +52,15 @@ export {
   type AuditLoggerOptions,
 } from "./audit-log.js";
 
+// Connection Pool
+export {
+  McpConnectionPool,
+  getGlobalMcpPool,
+  shutdownGlobalMcpPool,
+  type PooledConnection,
+  type ConnectionPoolOptions,
+} from "./connection-pool.js";
+
 // Types
 export type {
   McpServerConfig,
