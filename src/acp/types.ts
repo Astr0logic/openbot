@@ -1,9 +1,5 @@
 import type { SessionId } from "@agentclientprotocol/sdk";
-<<<<<<< HEAD
-=======
-
 import type { McpClientManager } from "../mcp/client.js";
->>>>>>> 03045174c (feat: add MCP (Model Context Protocol) client integration)
 import { VERSION } from "../version.js";
 
 export type AcpSession = {

@@ -79,6 +79,18 @@ git rebase --abort
 | `*.patch` files  | Usually take upstream version                    |
 | Source files     | Merge logic carefully, prefer upstream structure |
 
+### Security Improvements (Fork-Specific Files)
+
+**Files we've modified (potential conflicts):**
+- `src/agents/cli-credentials.ts` - Added encrypted storage integration
+- `src/agents/cli-credentials.test.ts` - Updated test for encrypted output
+
+**Files we've added (no conflict risk):**
+- `src/infra/encrypted-file.ts` - AES-256-GCM encryption utility
+- `src/infra/encrypted-file.test.ts` - Encryption tests
+- `.agent/workflows/encrypted-storage.md` - Encryption usage docs
+- `.agent/workflows/security-best-practices.md` - Security patterns docs
+
 ---
 
 ## Step 2B: Merge Strategy (Alternative)

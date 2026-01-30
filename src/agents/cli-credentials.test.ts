@@ -81,6 +81,7 @@ describe("cli credentials", () => {
     const writeKeychain = vi.fn(() => false);
 
     const { writeClaudeCliCredentials } = await import("./cli-credentials.js");
+    const { loadEncryptedFile } = await import("../infra/encrypted-file.js");
 
     const ok = writeClaudeCliCredentials(
       {
@@ -98,7 +99,8 @@ describe("cli credentials", () => {
     expect(ok).toBe(true);
     expect(writeKeychain).toHaveBeenCalledTimes(1);
 
-    const updated = JSON.parse(fs.readFileSync(credPath, "utf8")) as {
+    // Now stored as encrypted file
+    const updated = loadEncryptedFile(credPath) as {
       claudeAiOauth?: {
         accessToken?: string;
         refreshToken?: string;

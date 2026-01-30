@@ -1,9 +1,5 @@
 import { randomUUID } from "node:crypto";
-<<<<<<< HEAD
-=======
-
 import type { McpClientManager } from "../mcp/client.js";
->>>>>>> 03045174c (feat: add MCP (Model Context Protocol) client integration)
 import type { AcpSession } from "./types.js";
 
 export type AcpSessionStore = {

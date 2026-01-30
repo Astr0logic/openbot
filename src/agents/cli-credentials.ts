@@ -3,6 +3,15 @@ import { execSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+
+
+
+import {
+  isEncryptedFile,
+  loadEncryptedFile,
+  migrateToEncrypted,
+  saveEncryptedFile,
+} from "../infra/encrypted-file.js";
 import { loadJsonFile, saveJsonFile } from "../infra/json-file.js";
 import { createSubsystemLogger } from "../logging/subsystem.js";
 import { resolveUserPath } from "../utils.js";
@@ -37,18 +46,18 @@ export function resetCliCredentialCachesForTest(): void {
 
 export type ClaudeCliCredential =
   | {
-      type: "oauth";
-      provider: "anthropic";
-      access: string;
-      refresh: string;
-      expires: number;
-    }
+    type: "oauth";
+    provider: "anthropic";
+    access: string;
+    refresh: string;
+    expires: number;
+  }
   | {
-      type: "token";
-      provider: "anthropic";
-      token: string;
-      expires: number;
-    };
+    type: "token";
+    provider: "anthropic";
+    token: string;
+    expires: number;
+  };
 
 export type CodexCliCredential = {
   type: "oauth";
@@ -309,10 +318,24 @@ export function readClaudeCliCredentials(options?: {
   }
 
   const credPath = resolveClaudeCliCredentialsPath(options?.homeDir);
-  const raw = loadJsonFile(credPath);
-  if (!raw || typeof raw !== "object") {
-    return null;
+
+  // Try to read as encrypted file first (for non-macOS secure storage)
+  let raw: unknown;
+  if (isEncryptedFile(credPath)) {
+    raw = loadEncryptedFile(credPath);
+    log.debug("read credentials from encrypted file", { path: credPath });
+  } else {
+    raw = loadJsonFile(credPath);
+    // If we read plaintext, try to migrate to encrypted for future reads
+    if (raw && typeof raw === "object") {
+      const migrated = migrateToEncrypted(credPath);
+      if (migrated) {
+        log.info("migrated plaintext credentials to encrypted storage", { path: credPath });
+      }
+    }
   }
+
+  if (!raw || typeof raw !== "object") return null;
 
   const data = raw as Record<string, unknown>;
   const claudeOauth = data.claudeAiOauth as Record<string, unknown> | undefined;
@@ -433,10 +456,15 @@ export function writeClaudeCliFileCredentials(
   }
 
   try {
-    const raw = loadJsonFile(credPath);
-    if (!raw || typeof raw !== "object") {
-      return false;
+    // Read existing data (may be encrypted or plaintext)
+    let raw: unknown;
+    if (isEncryptedFile(credPath)) {
+      raw = loadEncryptedFile(credPath);
+    } else {
+      raw = loadJsonFile(credPath);
     }
+
+    if (!raw || typeof raw !== "object") return false;
 
     const data = raw as Record<string, unknown>;
     const existingOauth = data.claudeAiOauth as Record<string, unknown> | undefined;
@@ -451,8 +479,9 @@ export function writeClaudeCliFileCredentials(
       expiresAt: newCredentials.expires,
     };
 
-    saveJsonFile(credPath, data);
-    log.info("wrote refreshed credentials to claude cli file", {
+    // Always write as encrypted on non-macOS
+    saveEncryptedFile(credPath, data);
+    log.info("wrote refreshed credentials to encrypted file", {
       expires: new Date(newCredentials.expires).toISOString(),
     });
     return true;
