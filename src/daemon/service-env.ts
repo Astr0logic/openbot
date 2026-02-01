@@ -148,26 +148,26 @@ export function buildServiceEnvironment(params: {
   launchdLabel?: string;
 }): Record<string, string | undefined> {
   const { env, port, token, launchdLabel } = params;
-  const profile = env.OPENCLAW_PROFILE;
+  const profile = env.OPENBOT_PROFILE;
   const resolvedLaunchdLabel =
     launchdLabel ||
     (process.platform === "darwin" ? resolveGatewayLaunchAgentLabel(profile) : undefined);
   const systemdUnit = `${resolveGatewaySystemdServiceName(profile)}.service`;
-  const stateDir = env.OPENCLAW_STATE_DIR;
-  const configPath = env.OPENCLAW_CONFIG_PATH;
+  const stateDir = env.OPENBOT_STATE_DIR;
+  const configPath = env.OPENBOT_CONFIG_PATH;
   return {
     HOME: env.HOME,
     PATH: buildMinimalServicePath({ env }),
-    OPENCLAW_PROFILE: profile,
-    OPENCLAW_STATE_DIR: stateDir,
-    OPENCLAW_CONFIG_PATH: configPath,
-    OPENCLAW_GATEWAY_PORT: String(port),
-    OPENCLAW_GATEWAY_TOKEN: token,
-    OPENCLAW_LAUNCHD_LABEL: resolvedLaunchdLabel,
-    OPENCLAW_SYSTEMD_UNIT: systemdUnit,
-    OPENCLAW_SERVICE_MARKER: GATEWAY_SERVICE_MARKER,
-    OPENCLAW_SERVICE_KIND: GATEWAY_SERVICE_KIND,
-    OPENCLAW_SERVICE_VERSION: VERSION,
+    OPENBOT_PROFILE: profile,
+    OPENBOT_STATE_DIR: stateDir,
+    OPENBOT_CONFIG_PATH: configPath,
+    OPENBOT_GATEWAY_PORT: String(port),
+    OPENBOT_GATEWAY_TOKEN: token,
+    OPENBOT_LAUNCHD_LABEL: resolvedLaunchdLabel,
+    OPENBOT_SYSTEMD_UNIT: systemdUnit,
+    OPENBOT_SERVICE_MARKER: GATEWAY_SERVICE_MARKER,
+    OPENBOT_SERVICE_KIND: GATEWAY_SERVICE_KIND,
+    OPENBOT_SERVICE_VERSION: VERSION,
   };
 }
 
@@ -175,20 +175,20 @@ export function buildNodeServiceEnvironment(params: {
   env: Record<string, string | undefined>;
 }): Record<string, string | undefined> {
   const { env } = params;
-  const stateDir = env.OPENCLAW_STATE_DIR;
-  const configPath = env.OPENCLAW_CONFIG_PATH;
+  const stateDir = env.OPENBOT_STATE_DIR;
+  const configPath = env.OPENBOT_CONFIG_PATH;
   return {
     HOME: env.HOME,
     PATH: buildMinimalServicePath({ env }),
-    OPENCLAW_STATE_DIR: stateDir,
-    OPENCLAW_CONFIG_PATH: configPath,
-    OPENCLAW_LAUNCHD_LABEL: resolveNodeLaunchAgentLabel(),
-    OPENCLAW_SYSTEMD_UNIT: resolveNodeSystemdServiceName(),
-    OPENCLAW_WINDOWS_TASK_NAME: resolveNodeWindowsTaskName(),
-    OPENCLAW_TASK_SCRIPT_NAME: NODE_WINDOWS_TASK_SCRIPT_NAME,
-    OPENCLAW_LOG_PREFIX: "node",
-    OPENCLAW_SERVICE_MARKER: NODE_SERVICE_MARKER,
-    OPENCLAW_SERVICE_KIND: NODE_SERVICE_KIND,
-    OPENCLAW_SERVICE_VERSION: VERSION,
+    OPENBOT_STATE_DIR: stateDir,
+    OPENBOT_CONFIG_PATH: configPath,
+    OPENBOT_LAUNCHD_LABEL: resolveNodeLaunchAgentLabel(),
+    OPENBOT_SYSTEMD_UNIT: resolveNodeSystemdServiceName(),
+    OPENBOT_WINDOWS_TASK_NAME: resolveNodeWindowsTaskName(),
+    OPENBOT_TASK_SCRIPT_NAME: NODE_WINDOWS_TASK_SCRIPT_NAME,
+    OPENBOT_LOG_PREFIX: "node",
+    OPENBOT_SERVICE_MARKER: NODE_SERVICE_MARKER,
+    OPENBOT_SERVICE_KIND: NODE_SERVICE_KIND,
+    OPENBOT_SERVICE_VERSION: VERSION,
   };
 }

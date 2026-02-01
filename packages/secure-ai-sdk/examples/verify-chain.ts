@@ -3,7 +3,7 @@ import fs from "node:fs";
 
 async function main() {
     const filePath = process.argv[2];
-    const key = process.env.OPENCLAW_ENCRYPTION_KEY;
+    const key = process.env.OPENBOT_ENCRYPTION_KEY;
 
     if (!filePath) {
         console.error("Usage: npx tsx examples/verify-chain.ts <file-path>");
@@ -16,7 +16,7 @@ async function main() {
     }
 
     if (!key) {
-        console.warn("⚠️  Warning: OPENCLAW_ENCRYPTION_KEY not set. Using machine-derived key.");
+        console.warn("⚠️  Warning: OPENBOT_ENCRYPTION_KEY not set. Using machine-derived key.");
     }
 
     console.log(`🔓 Decrypting ${filePath}...`);

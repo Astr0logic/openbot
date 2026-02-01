@@ -15,7 +15,7 @@ export type GatewayTlsConfig = {
 
 export type WideAreaDiscoveryConfig = {
   enabled?: boolean;
-  /** Optional unicast DNS-SD domain (e.g. "openclaw.internal"). */
+  /** Optional unicast DNS-SD domain (e.g. "openbot.internal"). */
   domain?: string;
 };
 
@@ -38,7 +38,7 @@ export type DiscoveryConfig = {
 
 export type CanvasHostConfig = {
   enabled?: boolean;
-  /** Directory to serve (default: ~/.openclaw/workspace/canvas). */
+  /** Directory to serve (default: ~/.openbot/workspace/canvas). */
   root?: string;
   /** HTTP port to listen on (default: 18793). */
   port?: number;
@@ -64,7 +64,7 @@ export type TalkConfig = {
 export type GatewayControlUiConfig = {
   /** If false, the Gateway will not serve the Control UI (default /). */
   enabled?: boolean;
-  /** Optional base path prefix for the Control UI (e.g. "/openclaw"). */
+  /** Optional base path prefix for the Control UI (e.g. "/openbot"). */
   basePath?: string;
   /** Allow token-only auth over insecure HTTP (default: false). */
   allowInsecureAuth?: boolean;
@@ -193,6 +193,13 @@ export type GatewayHttpConfig = {
   endpoints?: GatewayHttpEndpointsConfig;
 };
 
+export type GatewayNotaryConfig = {
+  /** Traffic observation mode. */
+  mode?: "off" | "observe" | "enforce";
+  /** If true, traffic is allowed even if the Notary service fails or times out. */
+  failOpen?: boolean;
+};
+
 export type GatewayNodesConfig = {
   /** Browser routing policy for node-hosted browser proxies. */
   browser?: {
@@ -235,6 +242,7 @@ export type GatewayConfig = {
   tls?: GatewayTlsConfig;
   http?: GatewayHttpConfig;
   nodes?: GatewayNodesConfig;
+  notary?: GatewayNotaryConfig;
   /**
    * IPs of trusted reverse proxies (e.g. Traefik, nginx). When a connection
    * arrives from one of these IPs, the Gateway trusts `x-forwarded-for` (or

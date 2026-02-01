@@ -2,7 +2,7 @@
  * Config secret encryption for API keys and other sensitive values.
  *
  * This module provides functions to encrypt/decrypt sensitive fields
- * within OpenClaw config objects. Encrypted values are prefixed with
+ * within OpenBot config objects. Encrypted values are prefixed with
  * "enc:" to distinguish them from plaintext.
  *
  * Usage:
@@ -36,7 +36,7 @@ const SECRET_FIELD_NAMES = new Set([
  * Get encryption key material.
  */
 function getKeyMaterial(): string {
-  const envKey = process.env.OPENCLAW_ENCRYPTION_KEY?.trim();
+  const envKey = process.env.OPENBOT_ENCRYPTION_KEY?.trim();
   if (envKey && envKey.length > 0) return envKey;
 
   // Fallback to machine-derived key

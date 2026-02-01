@@ -1,75 +1,75 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
 :root {
-  /* Background - Warmer dark with depth */
-  --bg: #12141a;
-  --bg-accent: #14161d;
-  --bg-elevated: #1a1d25;
-  --bg-hover: #262a35;
-  --bg-muted: #262a35;
+  /* Background - Deep Ocean "Jellyfish" Theme */
+  --bg: #0b1015;
+  --bg-accent: #11161d;
+  --bg-elevated: #161b22;
+  --bg-hover: #1f242e;
+  --bg-muted: #1f242e;
 
-  /* Card / Surface - More contrast between levels */
-  --card: #181b22;
-  --card-foreground: #f4f4f5;
+  /* Card / Surface - Cold, deep styling */
+  --card: #13171f;
+  --card-foreground: #f0f6fc;
   --card-highlight: rgba(255, 255, 255, 0.05);
-  --popover: #181b22;
-  --popover-foreground: #f4f4f5;
+  --popover: #13171f;
+  --popover-foreground: #f0f6fc;
 
   /* Panel */
-  --panel: #12141a;
-  --panel-strong: #1a1d25;
-  --panel-hover: #262a35;
-  --chrome: rgba(18, 20, 26, 0.95);
-  --chrome-strong: rgba(18, 20, 26, 0.98);
+  --panel: #0b1015;
+  --panel-strong: #161b22;
+  --panel-hover: #1f242e;
+  --chrome: rgba(11, 16, 21, 0.95);
+  --chrome-strong: rgba(11, 16, 21, 0.98);
 
-  /* Text - Slightly warmer */
-  --text: #e4e4e7;
-  --text-strong: #fafafa;
-  --chat-text: #e4e4e7;
-  --muted: #71717a;
-  --muted-strong: #52525b;
-  --muted-foreground: #71717a;
+  /* Text - Cool white */
+  --text: #c9d1d9;
+  --text-strong: #f0f6fc;
+  --chat-text: #c9d1d9;
+  --muted: #8b949e;
+  --muted-strong: #6e7681;
+  --muted-foreground: #8b949e;
 
-  /* Border - Subtle but defined */
-  --border: #27272a;
-  --border-strong: #3f3f46;
-  --border-hover: #52525b;
-  --input: #27272a;
-  --ring: #ff5c5c;
+  /* Border - Cool slate */
+  --border: #30363d;
+  --border-strong: #484f58;
+  --border-hover: #6e7681;
+  --input: #21262d;
+  --ring: #06b6d4;
 
-  /* Accent - Punchy signature red */
-  --accent: #ff5c5c;
-  --accent-hover: #ff7070;
-  --accent-muted: #ff5c5c;
-  --accent-subtle: rgba(255, 92, 92, 0.15);
-  --accent-foreground: #fafafa;
-  --accent-glow: rgba(255, 92, 92, 0.25);
-  --primary: #ff5c5c;
+  /* Accent - Bioluminescent Teal ("Jellyfish") */
+  --accent: #06b6d4;
+  --accent-hover: #22d3ee;
+  --accent-muted: #0891b2;
+  --accent-subtle: rgba(6, 182, 212, 0.15);
+  --accent-foreground: #ffffff;
+  --accent-glow: rgba(6, 182, 212, 0.35);
+  --primary: #06b6d4;
   --primary-foreground: #ffffff;
 
-  /* Secondary - Teal accent for variety */
-  --secondary: #1e2028;
-  --secondary-foreground: #f4f4f5;
-  --accent-2: #14b8a6;
-  --accent-2-muted: rgba(20, 184, 166, 0.7);
-  --accent-2-subtle: rgba(20, 184, 166, 0.15);
+  /* Secondary - Electric Purple */
+  --secondary: #161b22;
+  --secondary-foreground: #f0f6fc;
+  --accent-2: #8b5cf6;
+  --accent-2-muted: rgba(139, 92, 246, 0.7);
+  --accent-2-subtle: rgba(139, 92, 246, 0.15);
 
-  /* Semantic - More saturated */
-  --ok: #22c55e;
-  --ok-muted: rgba(34, 197, 94, 0.75);
-  --ok-subtle: rgba(34, 197, 94, 0.12);
-  --destructive: #ef4444;
-  --destructive-foreground: #fafafa;
-  --warn: #f59e0b;
-  --warn-muted: rgba(245, 158, 11, 0.75);
-  --warn-subtle: rgba(245, 158, 11, 0.12);
-  --danger: #ef4444;
-  --danger-muted: rgba(239, 68, 68, 0.75);
-  --danger-subtle: rgba(239, 68, 68, 0.12);
-  --info: #3b82f6;
+  /* Semantic - Vibrant for dark mode */
+  --ok: #2ea043;
+  --ok-muted: rgba(46, 160, 67, 0.75);
+  --ok-subtle: rgba(46, 160, 67, 0.12);
+  --destructive: #da3633;
+  --destructive-foreground: #f0f6fc;
+  --warn: #d29922;
+  --warn-muted: rgba(210, 153, 34, 0.75);
+  --warn-subtle: rgba(210, 153, 34, 0.12);
+  --danger: #da3633;
+  --danger-muted: rgba(218, 54, 51, 0.75);
+  --danger-subtle: rgba(218, 54, 51, 0.12);
+  --info: #388bfd;
 
-  /* Focus - With glow */
-  --focus: rgba(255, 92, 92, 0.25);
+  /* Focus - Cyan Glow */
+  --focus: rgba(6, 182, 212, 0.25);
   --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--ring);
   --focus-glow: 0 0 0 2px var(--bg), 0 0 0 4px var(--ring), 0 0 20px var(--accent-glow);
 
@@ -87,11 +87,11 @@
   --font-display:
     "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  /* Shadows - Richer with subtle color */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.03);
-  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.03);
-  --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  /* Shadows - Cyan tint */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
   --shadow-glow: 0 0 30px var(--accent-glow);
 
   /* Radii - Slightly larger for friendlier feel */
@@ -241,7 +241,7 @@ html.theme-transition::view-transition-new(theme) {
   }
 }
 
-openclaw-app {
+openbot-app {
   display: block;
   position: relative;
   z-index: 1;

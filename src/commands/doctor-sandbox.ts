@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { OpenClawConfig } from "../config/config.js";
+import type { OpenBotConfig } from "../config/config.js";
 import type { RuntimeEnv } from "../runtime.js";
 import type { DoctorPrompter } from "./doctor-prompter.js";
 import {
@@ -86,17 +86,17 @@ async function dockerImageExists(image: string): Promise<boolean> {
   }
 }
 
-function resolveSandboxDockerImage(cfg: OpenClawConfig): string {
+function resolveSandboxDockerImage(cfg: OpenBotConfig): string {
   const image = cfg.agents?.defaults?.sandbox?.docker?.image?.trim();
   return image ? image : DEFAULT_SANDBOX_IMAGE;
 }
 
-function resolveSandboxBrowserImage(cfg: OpenClawConfig): string {
+function resolveSandboxBrowserImage(cfg: OpenBotConfig): string {
   const image = cfg.agents?.defaults?.sandbox?.browser?.image?.trim();
   return image ? image : DEFAULT_SANDBOX_BROWSER_IMAGE;
 }
 
-function updateSandboxDockerImage(cfg: OpenClawConfig, image: string): OpenClawConfig {
+function updateSandboxDockerImage(cfg: OpenBotConfig, image: string): OpenBotConfig {
   return {
     ...cfg,
     agents: {
@@ -115,7 +115,7 @@ function updateSandboxDockerImage(cfg: OpenClawConfig, image: string): OpenClawC
   };
 }
 
-function updateSandboxBrowserImage(cfg: OpenClawConfig, image: string): OpenClawConfig {
+function updateSandboxBrowserImage(cfg: OpenBotConfig, image: string): OpenBotConfig {
   return {
     ...cfg,
     agents: {
@@ -173,10 +173,10 @@ async function handleMissingSandboxImage(
 }
 
 export async function maybeRepairSandboxImages(
-  cfg: OpenClawConfig,
+  cfg: OpenBotConfig,
   runtime: RuntimeEnv,
   prompter: DoctorPrompter,
-): Promise<OpenClawConfig> {
+): Promise<OpenBotConfig> {
   const sandbox = cfg.agents?.defaults?.sandbox;
   const mode = sandbox?.mode ?? "off";
   if (!sandbox || mode === "off") {
@@ -235,7 +235,7 @@ export async function maybeRepairSandboxImages(
   return next;
 }
 
-export function noteSandboxScopeWarnings(cfg: OpenClawConfig) {
+export function noteSandboxScopeWarnings(cfg: OpenBotConfig) {
   const globalSandbox = cfg.agents?.defaults?.sandbox;
   const agents = Array.isArray(cfg.agents?.list) ? cfg.agents.list : [];
   const warnings: string[] = [];

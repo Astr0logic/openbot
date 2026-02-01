@@ -106,7 +106,7 @@ import { SecureAI, Gateway, EncryptedFileStorage, Notary } from "secure-ai-sdk";
 // 1. Setup Encrypted Storage
 const storage = new EncryptedFileStorage(
   "./receipts.enc",
-  process.env.OPENCLAW_ENCRYPTION_KEY // Optional: defaults to machine-key
+  process.env.OPENBOT_ENCRYPTION_KEY // Optional: defaults to machine-key
 );
 
 // 2. Initialize Notary

@@ -89,7 +89,7 @@ export function createHooksRequestHandler(
       logHooks.warn(
         "Hook token provided via query parameter is deprecated for security reasons. " +
           "Tokens in URLs appear in logs, browser history, and referrer headers. " +
-          "Use Authorization: Bearer <token> or X-OpenClaw-Token header instead.",
+          "Use Authorization: Bearer <token> or X-OpenBot-Token header instead.",
       );
     }
 
@@ -213,6 +213,7 @@ export function createGatewayHttpServer(opts: {
   handlePluginRequest?: HooksRequestHandler;
   resolvedAuth: import("./auth.js").ResolvedGatewayAuth;
   tlsOptions?: TlsOptions;
+  notary?: import("./server-notary.js").GatewayNotary;
 }): HttpServer {
   const {
     canvasHost,
@@ -224,6 +225,7 @@ export function createGatewayHttpServer(opts: {
     handleHooksRequest,
     handlePluginRequest,
     resolvedAuth,
+    notary,
   } = opts;
   const httpServer: HttpServer = opts.tlsOptions
     ? createHttpsServer(opts.tlsOptions, (req, res) => {
@@ -240,6 +242,9 @@ export function createGatewayHttpServer(opts: {
     }
 
     try {
+      if (notary) {
+        await notary.process(req, res);
+      }
       const configSnapshot = loadConfig();
       const trustedProxies = configSnapshot.gateway?.trustedProxies ?? [];
       if (await handleHooksRequest(req, res)) {

@@ -29,7 +29,7 @@ const KEY_LENGTH = 32; // 256 bits
  * cannot be trivially decrypted if copied to another machine.
  *
  * For stronger security, users should provide a password via environment
- * variable (OPENCLAW_ENCRYPTION_KEY) which is mixed into the key derivation.
+ * variable (OPENBOT_ENCRYPTION_KEY) which is mixed into the key derivation.
  */
 function getMachineKeyMaterial(): string {
     const components = [os.hostname(), os.homedir(), os.type(), os.platform(), os.arch()];
@@ -57,11 +57,11 @@ function getMachineKeyMaterial(): string {
 /**
  * Get the encryption key for file encryption.
  * Priority:
- * 1. OPENCLAW_ENCRYPTION_KEY environment variable (user-provided secret)
+ * 1. OPENBOT_ENCRYPTION_KEY environment variable (user-provided secret)
  * 2. Machine-derived key material (weaker, but better than plaintext)
  */
 function getBaseKeyMaterial(): string {
-    const envKey = process.env.OPENCLAW_ENCRYPTION_KEY?.trim();
+    const envKey = process.env.OPENBOT_ENCRYPTION_KEY?.trim();
     if (envKey && envKey.length > 0) {
         return envKey;
     }
@@ -78,7 +78,7 @@ function deriveKey(salt: Buffer, keyMaterial: string): Buffer {
 export type EncryptedFileOptions = {
     /**
      * Optional encryption key override. If not provided, uses
-     * OPENCLAW_ENCRYPTION_KEY env var or machine-derived key.
+     * OPENBOT_ENCRYPTION_KEY env var or machine-derived key.
      */
     encryptionKey?: string;
 };

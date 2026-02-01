@@ -4,6 +4,11 @@ import fs from "node:fs";
 import path from "node:path";
 import type { MsgContext } from "../../auto-reply/templating.js";
 import {
+  isEncryptedFile,
+  loadEncryptedFile,
+  saveEncryptedFile,
+} from "../../infra/encrypted-file.js";
+import {
   deliveryContextFromSession,
   mergeDeliveryContext,
   normalizeDeliveryContext,
@@ -13,17 +18,12 @@ import {
 import { getFileMtimeMs, isCacheEnabled, resolveCacheTtlMs } from "../cache-utils.js";
 import { deriveSessionMetaPatch } from "./metadata.js";
 import { mergeSessionEntry, type SessionEntry } from "./types.js";
-import {
-  isEncryptedFile,
-  loadEncryptedFile,
-  saveEncryptedFile,
-} from "../../infra/encrypted-file.js";
 
 /**
  * Check if session encryption is enabled via environment variable.
  */
 function isSessionEncryptionEnabled(): boolean {
-  const val = process.env.OPENCLAW_ENCRYPT_SESSIONS?.trim().toLowerCase();
+  const val = process.env.OPENBOT_ENCRYPT_SESSIONS?.trim().toLowerCase();
   return val === "1" || val === "true" || val === "yes";
 }
 
@@ -47,7 +47,7 @@ function isSessionStoreRecord(value: unknown): value is Record<string, SessionEn
 
 function getSessionStoreTtl(): number {
   return resolveCacheTtlMs({
-    envValue: process.env.OPENCLAW_SESSION_CACHE_TTL_MS,
+    envValue: process.env.OPENBOT_SESSION_CACHE_TTL_MS,
     defaultTtlMs: DEFAULT_SESSION_STORE_TTL_MS,
   });
 }
@@ -140,12 +140,6 @@ export function loadSessionStore(
   let store: Record<string, SessionEntry> = {};
   let mtimeMs = getFileMtimeMs(storePath);
   try {
-<<<<<<< HEAD
-    const raw = fs.readFileSync(storePath, "utf-8");
-    const parsed = JSON5.parse(raw);
-    if (isSessionStoreRecord(parsed)) {
-      store = parsed;
-=======
     // Try encrypted format first if file exists and is encrypted
     if (fs.existsSync(storePath) && isEncryptedFile(storePath)) {
       const decrypted = loadEncryptedFile(storePath);
@@ -159,7 +153,6 @@ export function loadSessionStore(
       if (isSessionStoreRecord(parsed)) {
         store = parsed as Record<string, SessionEntry>;
       }
->>>>>>> f09db8e3f (chore: save local changes before rebase)
     }
     mtimeMs = getFileMtimeMs(storePath) ?? mtimeMs;
   } catch {

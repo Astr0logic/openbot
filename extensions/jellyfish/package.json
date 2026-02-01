@@ -1,0 +1,14 @@
+{
+  "name": "@openclaw/jellyfish",
+  "version": "2026.1.30",
+  "description": "Jellyfish workflow tool plugin (typed pipelines + resumable approvals)",
+  "type": "module",
+  "devDependencies": {
+    "openbot": "workspace:*"
+  },
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

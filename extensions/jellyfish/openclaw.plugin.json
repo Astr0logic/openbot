@@ -1,0 +1,10 @@
+{
+  "id": "jellyfish",
+  "name": "Jellyfish",
+  "description": "Typed workflow tool with resumable approvals.",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

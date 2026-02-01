@@ -82,6 +82,6 @@ if [[ -f "$HASH_FILE" ]]; then
 fi
 
 pnpm -s exec tsc -p "$A2UI_RENDERER_DIR/tsconfig.json"
-rolldown -c "$A2UI_APP_DIR/rolldown.config.mjs"
+"$ROOT_DIR/node_modules/.bin/rolldown" -c "$A2UI_APP_DIR/rolldown.config.mjs"
 
 echo "$current_hash" > "$HASH_FILE"

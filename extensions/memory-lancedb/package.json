@@ -9,7 +9,7 @@
     "openai": "^6.17.0"
   },
   "devDependencies": {
-    "openclaw": "workspace:*"
+    "openbot": "workspace:*"
   },
   "openclaw": {
     "extensions": [

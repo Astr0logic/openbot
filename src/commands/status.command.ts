@@ -377,7 +377,7 @@ export async function statusCommand(
     },
   ];
 
-  runtime.log(theme.heading("OpenClaw status"));
+  runtime.log(theme.heading("OpenBot status"));
   runtime.log("");
   runtime.log(theme.heading("Overview"));
   runtime.log(
@@ -434,8 +434,8 @@ export async function statusCommand(
       runtime.log(theme.muted(`… +${sorted.length - shown.length} more`));
     }
   }
-  runtime.log(theme.muted(`Full report: ${formatCliCommand("openclaw security audit")}`));
-  runtime.log(theme.muted(`Deep probe: ${formatCliCommand("openclaw security audit --deep")}`));
+  runtime.log(theme.muted(`Full report: ${formatCliCommand("openbot security audit")}`));
+  runtime.log(theme.muted(`Deep probe: ${formatCliCommand("openbot security audit --deep")}`));
 
   runtime.log("");
   runtime.log(theme.heading("Channels"));
@@ -599,8 +599,8 @@ export async function statusCommand(
   }
 
   runtime.log("");
-  runtime.log("FAQ: https://docs.openclaw.ai/faq");
-  runtime.log("Troubleshooting: https://docs.openclaw.ai/troubleshooting");
+  runtime.log("FAQ: https://docs.openbot.ai/faq");
+  runtime.log("Troubleshooting: https://docs.openbot.ai/troubleshooting");
   runtime.log("");
   const updateHint = formatUpdateAvailableHint(update);
   if (updateHint) {
@@ -608,11 +608,11 @@ export async function statusCommand(
     runtime.log("");
   }
   runtime.log("Next steps:");
-  runtime.log(`  Need to share?      ${formatCliCommand("openclaw status --all")}`);
-  runtime.log(`  Need to debug live? ${formatCliCommand("openclaw logs --follow")}`);
+  runtime.log(`  Need to share?      ${formatCliCommand("openbot status --all")}`);
+  runtime.log(`  Need to debug live? ${formatCliCommand("openbot logs --follow")}`);
   if (gatewayReachable) {
-    runtime.log(`  Need to test channels? ${formatCliCommand("openclaw status --deep")}`);
+    runtime.log(`  Need to test channels? ${formatCliCommand("openbot status --deep")}`);
   } else {
-    runtime.log(`  Fix reachability first: ${formatCliCommand("openclaw gateway probe")}`);
+    runtime.log(`  Fix reachability first: ${formatCliCommand("openbot gateway probe")}`);
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "openclaw",
+  "name": "openbot",
   "version": "2026.1.30",
   "description": "WhatsApp gateway CLI (Baileys web) with Pi RPC agent",
   "keywords": [],
@@ -200,7 +200,8 @@
     "undici": "^7.19.2",
     "ws": "^8.19.0",
     "yaml": "^2.8.2",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "secure-ai-sdk": "workspace:*"
   },
   "devDependencies": {
     "@grammyjs/types": "^3.23.0",

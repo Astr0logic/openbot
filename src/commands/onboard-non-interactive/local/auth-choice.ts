@@ -1,4 +1,4 @@
-import type { OpenClawConfig } from "../../../config/config.js";
+import type { OpenBotConfig } from "../../../config/config.js";
 import type { RuntimeEnv } from "../../../runtime.js";
 import type { AuthChoice, OnboardOptions } from "../../onboard-types.js";
 import { upsertAuthProfile } from "../../../agents/auth-profiles.js";
@@ -37,12 +37,12 @@ import {
 import { resolveNonInteractiveApiKey } from "../api-keys.js";
 
 export async function applyNonInteractiveAuthChoice(params: {
-  nextConfig: OpenClawConfig;
+  nextConfig: OpenBotConfig;
   authChoice: AuthChoice;
   opts: OnboardOptions;
   runtime: RuntimeEnv;
-  baseConfig: OpenClawConfig;
-}): Promise<OpenClawConfig | null> {
+  baseConfig: OpenBotConfig;
+}): Promise<OpenBotConfig | null> {
   const { authChoice, opts, runtime, baseConfig } = params;
   let nextConfig = params.nextConfig;
 

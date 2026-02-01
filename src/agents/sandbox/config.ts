@@ -1,4 +1,4 @@
-import type { OpenClawConfig } from "../../config/config.js";
+import type { OpenBotConfig } from "../../config/config.js";
 import type {
   SandboxBrowserConfig,
   SandboxConfig,
@@ -123,10 +123,7 @@ export function resolveSandboxPruneConfig(params: {
   };
 }
 
-export function resolveSandboxConfigForAgent(
-  cfg?: OpenClawConfig,
-  agentId?: string,
-): SandboxConfig {
+export function resolveSandboxConfigForAgent(cfg?: OpenBotConfig, agentId?: string): SandboxConfig {
   const agent = cfg?.agents?.defaults?.sandbox;
 
   // Agent-specific sandbox config overrides global

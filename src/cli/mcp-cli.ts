@@ -21,7 +21,7 @@ export function registerMcpCli(program: Command): void {
     .option("-v, --verbose", "Verbose output")
     .action(async (options) => {
       const { startMcpServerStdio } = await import("../mcp/server.js");
-      const { createOpenClawTools } = await import("../agents/openclaw-tools.js");
+      const { createOpenBotTools } = await import("../agents/openbot-tools.js");
       const { loadConfig } = await import("../config/config.js");
 
       const log = options.verbose ? (msg: string) => console.error(msg) : () => {};
@@ -29,7 +29,7 @@ export function registerMcpCli(program: Command): void {
       log("[mcp] loading tools...");
 
       const config = loadConfig();
-      const tools = createOpenClawTools({ config });
+      const tools = createOpenBotTools({ config });
 
       log(`[mcp] loaded ${tools.length} tools`);
       log("[mcp] starting MCP server on stdio...");
@@ -48,11 +48,11 @@ export function registerMcpCli(program: Command): void {
     .description("List available openbot tools that can be exposed via MCP")
     .option("--json", "Output as JSON")
     .action(async (options) => {
-      const { createOpenClawTools } = await import("../agents/openclaw-tools.js");
+      const { createOpenBotTools } = await import("../agents/openbot-tools.js");
       const { loadConfig } = await import("../config/config.js");
 
       const config = loadConfig();
-      const tools = createOpenClawTools({ config });
+      const tools = createOpenBotTools({ config });
 
       if (options.json) {
         const toolList = tools.map((t) => ({

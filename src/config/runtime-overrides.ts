@@ -1,4 +1,4 @@
-import type { OpenClawConfig } from "./types.js";
+import type { OpenBotConfig } from "./types.js";
 import { parseConfigPath, setConfigValueAtPath, unsetConfigValueAtPath } from "./config-paths.js";
 
 type OverrideTree = Record<string, unknown>;
@@ -68,9 +68,9 @@ export function unsetConfigOverride(pathRaw: string): {
   return { ok: true, removed };
 }
 
-export function applyConfigOverrides(cfg: OpenClawConfig): OpenClawConfig {
+export function applyConfigOverrides(cfg: OpenBotConfig): OpenBotConfig {
   if (!overrides || Object.keys(overrides).length === 0) {
     return cfg;
   }
-  return mergeOverrides(cfg, overrides) as OpenClawConfig;
+  return mergeOverrides(cfg, overrides) as OpenBotConfig;
 }

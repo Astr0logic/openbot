@@ -12,17 +12,19 @@ import type { GatewayTlsRuntime } from "./server/tls.js";
 import type { GatewayWsClient } from "./server/ws-types.js";
 import { CANVAS_HOST_PATH } from "../canvas-host/a2ui.js";
 import { type CanvasHostHandler, createCanvasHostHandler } from "../canvas-host/server.js";
+import { resolveStateDir } from "../config/paths.js";
 import { resolveGatewayListenHosts } from "./net.js";
 import { createGatewayBroadcaster } from "./server-broadcast.js";
 import { type ChatRunEntry, createChatRunState } from "./server-chat.js";
 import { MAX_PAYLOAD_BYTES } from "./server-constants.js";
 import { attachGatewayUpgradeHandler, createGatewayHttpServer } from "./server-http.js";
+import { createGatewayNotary } from "./server-notary.js";
 import { createGatewayHooksRequestHandler } from "./server/hooks.js";
 import { listenGatewayHttpServer } from "./server/http-listen.js";
 import { createGatewayPluginRequestHandler } from "./server/plugins-http.js";
 
 export async function createGatewayRuntimeState(params: {
-  cfg: import("../config/config.js").OpenClawConfig;
+  cfg: import("../config/config.js").OpenBotConfig;
   bindHost: string;
   port: number;
   controlUiEnabled: boolean;
@@ -104,6 +106,9 @@ export async function createGatewayRuntimeState(params: {
     log: params.logPlugins,
   });
 
+  const stateDir = resolveStateDir();
+  const notary = createGatewayNotary(params.cfg, stateDir);
+
   const bindHosts = await resolveGatewayListenHosts(params.bindHost);
   const httpServers: HttpServer[] = [];
   const httpBindHosts: string[] = [];
@@ -119,6 +124,7 @@ export async function createGatewayRuntimeState(params: {
       handlePluginRequest,
       resolvedAuth: params.resolvedAuth,
       tlsOptions: params.gatewayTls?.enabled ? params.gatewayTls.tlsOptions : undefined,
+      notary,
     });
     try {
       await listenGatewayHttpServer({

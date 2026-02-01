@@ -40,7 +40,7 @@ describe("docker-setup.sh", () => {
       return;
     }
 
-    const rootDir = await mkdtemp(join(tmpdir(), "openclaw-docker-setup-"));
+    const rootDir = await mkdtemp(join(tmpdir(), "openbot-docker-setup-"));
     const scriptPath = join(rootDir, "docker-setup.sh");
     const dockerfilePath = join(rootDir, "Dockerfile");
     const composePath = join(rootDir, "docker-compose.yml");
@@ -52,7 +52,7 @@ describe("docker-setup.sh", () => {
     await writeFile(dockerfilePath, "FROM scratch\n");
     await writeFile(
       composePath,
-      "services:\n  openclaw-gateway:\n    image: noop\n  openclaw-cli:\n    image: noop\n",
+      "services:\n  openbot-gateway:\n    image: noop\n  openbot-cli:\n    image: noop\n",
     );
     await writeDockerStub(binDir, logPath);
 
@@ -60,13 +60,13 @@ describe("docker-setup.sh", () => {
       ...process.env,
       PATH: `${binDir}:${process.env.PATH ?? ""}`,
       DOCKER_STUB_LOG: logPath,
-      OPENCLAW_GATEWAY_TOKEN: "test-token",
-      OPENCLAW_CONFIG_DIR: join(rootDir, "config"),
-      OPENCLAW_WORKSPACE_DIR: join(rootDir, "openclaw"),
+      OPENBOT_GATEWAY_TOKEN: "test-token",
+      OPENBOT_CONFIG_DIR: join(rootDir, "config"),
+      OPENBOT_WORKSPACE_DIR: join(rootDir, "openbot"),
     };
-    delete env.OPENCLAW_DOCKER_APT_PACKAGES;
-    delete env.OPENCLAW_EXTRA_MOUNTS;
-    delete env.OPENCLAW_HOME_VOLUME;
+    delete env.OPENBOT_DOCKER_APT_PACKAGES;
+    delete env.OPENBOT_EXTRA_MOUNTS;
+    delete env.OPENBOT_HOME_VOLUME;
 
     const result = spawnSync("bash", [scriptPath], {
       cwd: rootDir,
@@ -77,12 +77,12 @@ describe("docker-setup.sh", () => {
     expect(result.status).toBe(0);
 
     const envFile = await readFile(join(rootDir, ".env"), "utf8");
-    expect(envFile).toContain("OPENCLAW_DOCKER_APT_PACKAGES=");
-    expect(envFile).toContain("OPENCLAW_EXTRA_MOUNTS=");
-    expect(envFile).toContain("OPENCLAW_HOME_VOLUME=");
+    expect(envFile).toContain("OPENBOT_DOCKER_APT_PACKAGES=");
+    expect(envFile).toContain("OPENBOT_EXTRA_MOUNTS=");
+    expect(envFile).toContain("OPENBOT_HOME_VOLUME=");
   });
 
-  it("plumbs OPENCLAW_DOCKER_APT_PACKAGES into .env and docker build args", async () => {
+  it("plumbs OPENBOT_DOCKER_APT_PACKAGES into .env and docker build args", async () => {
     const assocCheck = spawnSync("bash", ["-c", "declare -A _t=()"], {
       encoding: "utf8",
     });
@@ -90,7 +90,7 @@ describe("docker-setup.sh", () => {
       return;
     }
 
-    const rootDir = await mkdtemp(join(tmpdir(), "openclaw-docker-setup-"));
+    const rootDir = await mkdtemp(join(tmpdir(), "openbot-docker-setup-"));
     const scriptPath = join(rootDir, "docker-setup.sh");
     const dockerfilePath = join(rootDir, "Dockerfile");
     const composePath = join(rootDir, "docker-compose.yml");
@@ -102,7 +102,7 @@ describe("docker-setup.sh", () => {
     await writeFile(dockerfilePath, "FROM scratch\n");
     await writeFile(
       composePath,
-      "services:\n  openclaw-gateway:\n    image: noop\n  openclaw-cli:\n    image: noop\n",
+      "services:\n  openbot-gateway:\n    image: noop\n  openbot-cli:\n    image: noop\n",
     );
     await writeDockerStub(binDir, logPath);
 
@@ -110,12 +110,12 @@ describe("docker-setup.sh", () => {
       ...process.env,
       PATH: `${binDir}:${process.env.PATH ?? ""}`,
       DOCKER_STUB_LOG: logPath,
-      OPENCLAW_DOCKER_APT_PACKAGES: "ffmpeg build-essential",
-      OPENCLAW_GATEWAY_TOKEN: "test-token",
-      OPENCLAW_CONFIG_DIR: join(rootDir, "config"),
-      OPENCLAW_WORKSPACE_DIR: join(rootDir, "openclaw"),
-      OPENCLAW_EXTRA_MOUNTS: "",
-      OPENCLAW_HOME_VOLUME: "",
+      OPENBOT_DOCKER_APT_PACKAGES: "ffmpeg build-essential",
+      OPENBOT_GATEWAY_TOKEN: "test-token",
+      OPENBOT_CONFIG_DIR: join(rootDir, "config"),
+      OPENBOT_WORKSPACE_DIR: join(rootDir, "openbot"),
+      OPENBOT_EXTRA_MOUNTS: "",
+      OPENBOT_HOME_VOLUME: "",
     };
 
     const result = spawnSync("bash", [scriptPath], {
@@ -127,10 +127,10 @@ describe("docker-setup.sh", () => {
     expect(result.status).toBe(0);
 
     const envFile = await readFile(join(rootDir, ".env"), "utf8");
-    expect(envFile).toContain("OPENCLAW_DOCKER_APT_PACKAGES=ffmpeg build-essential");
+    expect(envFile).toContain("OPENBOT_DOCKER_APT_PACKAGES=ffmpeg build-essential");
 
     const log = await readFile(logPath, "utf8");
-    expect(log).toContain("--build-arg OPENCLAW_DOCKER_APT_PACKAGES=ffmpeg build-essential");
+    expect(log).toContain("--build-arg OPENBOT_DOCKER_APT_PACKAGES=ffmpeg build-essential");
   });
 
   it("keeps docker-compose gateway command in sync", async () => {

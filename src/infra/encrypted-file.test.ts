@@ -3,7 +3,6 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
 import {
   isEncryptedFile,
   loadEncryptedFile,
@@ -16,7 +15,7 @@ describe("encrypted-file", () => {
   let testFile: string;
 
   beforeEach(() => {
-    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-enc-test-"));
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openbot-enc-test-"));
     testFile = path.join(tempDir, "test-creds.enc");
   });
 
@@ -77,8 +76,8 @@ describe("encrypted-file", () => {
       expect(stats.mode & 0o777).toBe(0o600);
     });
 
-    it("uses OPENCLAW_ENCRYPTION_KEY env var when no key provided", () => {
-      vi.stubEnv("OPENCLAW_ENCRYPTION_KEY", "env-secret-key");
+    it("uses OPENBOT_ENCRYPTION_KEY env var when no key provided", () => {
+      vi.stubEnv("OPENBOT_ENCRYPTION_KEY", "env-secret-key");
 
       const data = { envTest: true };
       saveEncryptedFile(testFile, data);

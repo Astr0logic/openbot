@@ -27,7 +27,7 @@ const NodeHostSchema = z
   .strict()
   .optional();
 
-export const OpenClawSchema = z
+export const OpenBotSchema = z
   .object({
     meta: z
       .object({
@@ -154,7 +154,7 @@ export const OpenClawSchema = z
               .object({
                 cdpPort: z.number().int().min(1).max(65535).optional(),
                 cdpUrl: z.string().optional(),
-                driver: z.union([z.literal("openclaw"), z.literal("extension")]).optional(),
+                driver: z.union([z.literal("openbot"), z.literal("extension")]).optional(),
                 color: HexColorSchema,
               })
               .strict()
@@ -440,6 +440,15 @@ export const OpenClawSchema = z
               .optional(),
             allowCommands: z.array(z.string()).optional(),
             denyCommands: z.array(z.string()).optional(),
+          })
+          .strict()
+          .optional(),
+        notary: z
+          .object({
+            mode: z
+              .union([z.literal("off"), z.literal("observe"), z.literal("enforce")])
+              .optional(),
+            failOpen: z.boolean().optional(),
           })
           .strict()
           .optional(),
