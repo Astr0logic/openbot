@@ -13,6 +13,19 @@ import {
 import { getFileMtimeMs, isCacheEnabled, resolveCacheTtlMs } from "../cache-utils.js";
 import { deriveSessionMetaPatch } from "./metadata.js";
 import { mergeSessionEntry, type SessionEntry } from "./types.js";
+import {
+  isEncryptedFile,
+  loadEncryptedFile,
+  saveEncryptedFile,
+} from "../../infra/encrypted-file.js";
+
+/**
+ * Check if session encryption is enabled via environment variable.
+ */
+function isSessionEncryptionEnabled(): boolean {
+  const val = process.env.OPENCLAW_ENCRYPT_SESSIONS?.trim().toLowerCase();
+  return val === "1" || val === "true" || val === "yes";
+}
 
 // ============================================================================
 // Session Store Cache with TTL Support
@@ -127,10 +140,26 @@ export function loadSessionStore(
   let store: Record<string, SessionEntry> = {};
   let mtimeMs = getFileMtimeMs(storePath);
   try {
+<<<<<<< HEAD
     const raw = fs.readFileSync(storePath, "utf-8");
     const parsed = JSON5.parse(raw);
     if (isSessionStoreRecord(parsed)) {
       store = parsed;
+=======
+    // Try encrypted format first if file exists and is encrypted
+    if (fs.existsSync(storePath) && isEncryptedFile(storePath)) {
+      const decrypted = loadEncryptedFile(storePath);
+      if (isSessionStoreRecord(decrypted)) {
+        store = decrypted as Record<string, SessionEntry>;
+      }
+    } else {
+      // Fall back to plaintext JSON/JSON5
+      const raw = fs.readFileSync(storePath, "utf-8");
+      const parsed = JSON5.parse(raw);
+      if (isSessionStoreRecord(parsed)) {
+        store = parsed as Record<string, SessionEntry>;
+      }
+>>>>>>> f09db8e3f (chore: save local changes before rebase)
     }
     mtimeMs = getFileMtimeMs(storePath) ?? mtimeMs;
   } catch {
@@ -196,6 +225,13 @@ async function saveSessionStoreUnlocked(
   normalizeSessionStore(store);
 
   await fs.promises.mkdir(path.dirname(storePath), { recursive: true });
+
+  // Use encryption if enabled
+  if (isSessionEncryptionEnabled()) {
+    saveEncryptedFile(storePath, store);
+    return;
+  }
+
   const json = JSON.stringify(store, null, 2);
 
   // Windows: avoid atomic rename swaps (can be flaky under concurrent access).

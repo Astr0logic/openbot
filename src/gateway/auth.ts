@@ -1,6 +1,7 @@
 import type { IncomingMessage } from "node:http";
 import { timingSafeEqual } from "node:crypto";
 import type { GatewayAuthConfig, GatewayTailscaleMode } from "../config/config.js";
+import { verifyPassword } from "../infra/password-hash.js";
 import { readTailscaleWhoisIdentity, type TailscaleWhoisIdentity } from "../infra/tailscale.js";
 import { isTrustedProxyAddress, parseForwardedForClientIp, resolveGatewayClientIp } from "./net.js";
 export type ResolvedGatewayAuthMode = "token" | "password";
@@ -231,7 +232,9 @@ export function assertGatewayAuthConfigured(auth: ResolvedGatewayAuth): void {
     );
   }
   if (auth.mode === "password" && !auth.password) {
-    throw new Error("gateway auth mode is password, but no password was configured");
+    throw new Error(
+      "gateway auth mode is password, but no password was configured (set gateway.auth.password or OPENCLAW_GATEWAY_PASSWORD)",
+    );
   }
 }
 
@@ -281,7 +284,9 @@ export async function authorizeGatewayConnect(params: {
     if (!password) {
       return { ok: false, reason: "password_missing" };
     }
-    if (!safeEqual(password, auth.password)) {
+    // Support both hashed and plaintext passwords for backwards compatibility
+    const passwordMatch = await verifyPassword(password, auth.password);
+    if (!passwordMatch) {
       return { ok: false, reason: "password_mismatch" };
     }
     return { ok: true, method: "password" };
