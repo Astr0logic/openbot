@@ -169,6 +169,12 @@ Run `openbot doctor` to surface risky/misconfigured DM policies.
 - [Models](https://docs.openbot.ai/concepts/models), [model failover](https://docs.openbot.ai/concepts/model-failover), and [session pruning](https://docs.openbot.ai/concepts/session-pruning).
 - [Security](https://docs.openbot.ai/gateway/security) and [troubleshooting](https://docs.openbot.ai/channels/troubleshooting).
 
+### Secure AI Gateway (Notary)
+
+- **[Secure AI SDK](https://github.com/openbot/openbot/tree/main/packages/secure-ai-sdk)** — A zero-latency, drop-in SDK for generating immutable audit receipts for AI API calls.
+- **[Transparent Notary](https://docs.openbot.ai/gateway/notary)** — Fail-open observation layer that signs and logs every AI interaction without blocking traffic.
+
+
 ### Ops + packaging
 
 - [Control UI](https://docs.openbot.ai/web) + [WebChat](https://docs.openbot.ai/web/webchat) served directly from the Gateway.
