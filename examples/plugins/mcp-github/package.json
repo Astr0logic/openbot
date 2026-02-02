@@ -1,0 +1,44 @@
+{
+  "name": "@jrl/mcp-github",
+  "version": "1.0.0",
+  "description": "GitHub integration via MCP for OpenBot",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "author": {
+    "name": "Jellyfish Research Labs",
+    "email": "plugins@jellyfishresearch.ai",
+    "url": "https://jellyfishresearch.ai"
+  },
+  "openbot": {
+    "id": "jrl/mcp-github",
+    "name": "MCP GitHub",
+    "description": "Connect to GitHub via MCP - issues, PRs, repos, and more",
+    "version": "1.0.0",
+    "category": "mcp",
+    "tier": "free",
+    "author": {
+      "name": "Jellyfish Research Labs"
+    },
+    "license": "MIT",
+    "openbotVersion": ">=2026.1.0",
+    "main": "dist/index.js",
+    "keywords": [
+      "mcp",
+      "github",
+      "issues",
+      "pull-requests",
+      "repositories"
+    ],
+    "permissions": [
+      "network",
+      "secrets"
+    ]
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.0"
+  },
+  "peerDependencies": {
+    "openbot": ">=2026.1.0"
+  }
+}

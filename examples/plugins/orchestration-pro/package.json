@@ -1,0 +1,58 @@
+{
+  "name": "@jrl/orchestration-pro",
+  "version": "1.0.0",
+  "description": "Professional orchestration features for OpenBot",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "Commercial",
+  "author": {
+    "name": "Jellyfish Research Labs",
+    "email": "plugins@jellyfishresearch.ai",
+    "url": "https://jellyfishresearch.ai"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jrl/orchestration-pro"
+  },
+  "openbot": {
+    "id": "jrl/orchestration-pro",
+    "name": "Orchestration Pro",
+    "description": "Advanced multi-instance orchestration with unlimited workers and priority routing",
+    "version": "1.0.0",
+    "category": "orchestration",
+    "tier": "paid",
+    "priceUsdCents": 4900,
+    "author": {
+      "name": "Jellyfish Research Labs",
+      "email": "plugins@jellyfishresearch.ai",
+      "url": "https://jellyfishresearch.ai"
+    },
+    "license": "Commercial",
+    "openbotVersion": ">=2026.1.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "keywords": [
+      "orchestration",
+      "multi-instance",
+      "workers",
+      "load-balancing",
+      "clustering"
+    ],
+    "permissions": [
+      "network",
+      "config"
+    ],
+    "images": [
+      "https://plugins.openbot.ai/jrl/orchestration-pro/screenshot1.png",
+      "https://plugins.openbot.ai/jrl/orchestration-pro/screenshot2.png"
+    ]
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "openbot": ">=2026.1.0"
+  },
+  "devDependencies": {
+    "openbot": "workspace:*",
+    "typescript": "^5.0.0"
+  }
+}

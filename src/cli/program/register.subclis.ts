@@ -255,6 +255,14 @@ const entries: SubCliEntry[] = [
       mod.registerOrchestrationCli(program);
     },
   },
+  {
+    name: "plugins",
+    description: "Plugin marketplace",
+    register: async (program) => {
+      const mod = await import("../marketplace-cli.js");
+      mod.registerMarketplaceCli(program);
+    },
+  },
 ];
 
 export function getSubCliEntries(): SubCliEntry[] {
