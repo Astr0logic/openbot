@@ -94,7 +94,7 @@ export class TaskRouter {
    * Round-robin selection.
    */
   private selectRoundRobin(workers: WorkerInfo[]): WorkerInfo {
-    const worker = workers[this.roundRobinIndex % workers.length]!;
+    const worker = workers[this.roundRobinIndex % workers.length] as WorkerInfo;
     this.roundRobinIndex = (this.roundRobinIndex + 1) % workers.length;
     return worker;
   }
@@ -129,6 +129,6 @@ export class TaskRouter {
    */
   private selectRandom(workers: WorkerInfo[]): WorkerInfo {
     const index = Math.floor(Math.random() * workers.length);
-    return workers[index]!;
+    return workers[index] as WorkerInfo;
   }
 }

@@ -43,6 +43,9 @@ export { WorkerRegistry, type WorkerRegistryOptions } from "./worker-registry.js
 // Task routing
 export { TaskRouter, type TaskRouterOptions } from "./task-router.js";
 
+// HTTP API
+export { OrchestratorHttpServer, type OrchestratorHttpServerOptions } from "./http-server.js";
+
 // Types
 export type {
   WorkerStatus,

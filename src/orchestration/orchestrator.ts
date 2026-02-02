@@ -4,7 +4,6 @@
  */
 
 import { randomUUID } from "node:crypto";
-
 import type {
   Task,
   TaskResult,
@@ -14,8 +13,8 @@ import type {
   HeartbeatPayload,
   WorkerInfo,
 } from "./types.js";
-import { WorkerRegistry } from "./worker-registry.js";
 import { TaskRouter } from "./task-router.js";
+import { WorkerRegistry } from "./worker-registry.js";
 
 export type TaskSubmission = {
   type: string;
@@ -262,7 +261,9 @@ export class Orchestrator {
     let insertIndex = this.taskQueue.length;
 
     for (let i = 0; i < this.taskQueue.length; i++) {
-      const existingPriority = priorityOrder[this.taskQueue[i]!.priority];
+      const existingTask = this.taskQueue[i];
+      if (!existingTask) continue;
+      const existingPriority = priorityOrder[existingTask.priority];
       if (taskPriority < existingPriority) {
         insertIndex = i;
         break;
