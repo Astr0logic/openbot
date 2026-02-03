@@ -224,6 +224,14 @@ const entries: SubCliEntry[] = [
     },
   },
   {
+    name: "nexus",
+    description: "Nexus - agent marketplace",
+    register: async (program) => {
+      const mod = await import("../marketplace-cli.js");
+      mod.registerMarketplaceCli(program);
+    },
+  },
+  {
     name: "update",
     description: "CLI update helpers",
     register: async (program) => {
