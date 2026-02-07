@@ -46,6 +46,30 @@ export { TaskRouter, type TaskRouterOptions } from "./task-router.js";
 // HTTP API
 export { OrchestratorHttpServer, type OrchestratorHttpServerOptions } from "./http-server.js";
 
+// Resilience
+export {
+  CircuitBreaker,
+  CircuitBreakerRegistry,
+  type CircuitState,
+  type CircuitBreakerOptions,
+} from "./circuit-breaker.js";
+
+export {
+  ExponentialBackoff,
+  withRetry,
+  calculateTotalBackoffTime,
+  type BackoffOptions,
+} from "./backoff.js";
+
+export {
+  HealthScorer,
+  WorkerHealthTracker,
+  HealthTrackerRegistry,
+  type HealthWeights,
+  type HealthMetrics,
+  type HealthScoreOptions,
+} from "./health-score.js";
+
 // Types
 export type {
   WorkerStatus,
